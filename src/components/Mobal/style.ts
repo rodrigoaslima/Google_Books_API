@@ -27,6 +27,7 @@ export const OverlayInner = styled.div`
     border: solid;
     border-color: #cc7300;
     border-radius: 5px;
+    overflow-y: auto;
 `;
 
 export const  InnerBox = styled.div`
@@ -86,5 +87,9 @@ export const CloseButton = styled.div`
     svg {
        color: #ffff;
     }
+
+`;
+
+export const Header = styled.div`
 
 `;

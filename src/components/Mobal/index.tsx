@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '../Button'
 import {BookDTO} from '../../dtos/BookDTO'
-import {AiOutlineClose} from 'react-icons/ai'
+import {AiOutlineClose, AiOutlineStar, AiFillStar} from 'react-icons/ai'
 
 import { Overlay, OverlayInner, InnerBox, Authors, DescriptionText, Image, Infos, Preview, SubTitle, Tittle, CloseButton } from './style';
 
@@ -14,7 +14,15 @@ const Mobal = ({data, openModal}: DataProps) => {
   return(
     <Overlay>
         <OverlayInner>
+            <div>
             <CloseButton onClick={openModal}><AiOutlineClose color='#cc7300' size={50} /></CloseButton>
+
+            <div>
+            <DescriptionText>Add to favorites</DescriptionText>
+            </div>
+            <CloseButton onClick={openModal}><AiFillStar color='#cc7300' size={50} /></CloseButton>
+            </div>
+            
             <InnerBox>
                 <Image src={data.img} alt="" />
                 <Infos >

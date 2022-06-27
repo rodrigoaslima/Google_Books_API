@@ -24,4 +24,10 @@ export default createGlobalStyle`
         cursor: pointer;
     }
 
+    ul{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
 `;

@@ -10,17 +10,16 @@ import BookCard from '../../components/BookCard';
 import Modal from '../../components/Mobal';
 import {BookDTO} from '../../dtos/BookDTO'
 
-import { Container, CardContainer } from './styles';
+import { Container, CardContainer, Pagination } from './styles';
 
 
 const Main: React.FC = () => {
     const [openModal, setOpenModal] = useState(false);
-    const [modalInfo, setModalInfo] = useState({} as BookDTO)
+    const [modalInfo, setModalInfo] = useState({} as BookDTO)  
 
     const formRef = useRef<FormHandles>(null)
-    const {getBooksList} = useBooks();
-    const {booksList} = useBooks();
-
+    const {getBooksList, getBooksPage, booksList} = useBooks();
+   
     const handleSubmit = useCallback((text: string)=> {
         getBooksList(text)
     }, [getBooksList])
@@ -33,6 +32,13 @@ const Main: React.FC = () => {
     const handleCloseModal = ()=>{
         setOpenModal(!openModal)
     }
+
+    const handlePageClick = useCallback((page: number)=> {
+        getBooksPage(page)
+    }, [getBooksPage])
+
+    const pages = Math.ceil(booksList.totalItens / 40);
+
 
   return(
     <div>
@@ -54,7 +60,20 @@ const Main: React.FC = () => {
         </Form>
 
         <div>
-
+            <Pagination 
+                breakLabel="..."
+                onPageChange={(e) => handlePageClick(e.selected)}
+                pageRangeDisplayed={10}
+                pageCount={pages}
+                pageClassName="pageItem"
+                initialPage={1}
+                containerClassName="pagination"
+                breakClassName="pageItem"
+                previousLinkClassName="pageItem"
+                previousClassName="pageItem"
+                nextLinkClassName="pageItem"
+                nextClassName="pageItem"
+            />
         </div>
         <CardContainer>
             {
