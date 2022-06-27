@@ -1,8 +1,9 @@
 import React from 'react';
 import Button from '../Button'
 import {BookDTO} from '../../dtos/BookDTO'
+import {AiOutlineClose} from 'react-icons/ai'
 
-import { Container, DialogBox, Authors, DescriptionText, Image, Infos, Preview, SubTitle, Tittle } from './style';
+import { Overlay, OverlayInner, InnerBox, Authors, DescriptionText, Image, Infos, Preview, SubTitle, Tittle, CloseButton } from './style';
 
 interface DataProps{
     data: BookDTO
@@ -11,9 +12,10 @@ interface DataProps{
 
 const Mobal = ({data, openModal}: DataProps) => {
   return(
-    <Container>
-        <div className="overlay-inner">
-            <DialogBox>
+    <Overlay>
+        <OverlayInner>
+            <CloseButton onClick={openModal}><AiOutlineClose color='#cc7300' size={50} /></CloseButton>
+            <InnerBox>
                 <Image src={data.img} alt="" />
                 <Infos >
                     <Tittle>{data.title}</Tittle>
@@ -22,10 +24,10 @@ const Mobal = ({data, openModal}: DataProps) => {
                     <br/>
                     <Preview href={data.link}>More</Preview>
                 </Infos>
-            </DialogBox>
+            </InnerBox>
             <DescriptionText >{data.description}</DescriptionText>
-        </div>
-    </Container>
+        </OverlayInner>
+    </Overlay>
   );
 }
 
