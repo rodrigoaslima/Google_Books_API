@@ -6,4 +6,5 @@ export interface BookDTO{
     link: string;
     img: string;
     description: string;
+    favorite: true | false;
 }

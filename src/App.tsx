@@ -1,15 +1,18 @@
 import Main from './pages/Main';
 import { BookProvider} from './context/BookContext'
-
+import { FavoriteProvider } from './context/FavoriteContext';
 
 import GlobalStyle from './styles/global';
 
+
 function App() {
   return (
-    <BookProvider> 
-      <GlobalStyle/>
-      <Main/>
-    </BookProvider>
+    <FavoriteProvider>
+      <BookProvider>
+        <GlobalStyle/>
+        <Main/>
+      </BookProvider> 
+    </FavoriteProvider>
   );
 }
 

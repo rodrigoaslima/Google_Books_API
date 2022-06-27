@@ -17,7 +17,11 @@ interface IBooksContextData{
     booksList: BookList;
     getBooksList: (text: string) => Promise<void>
     getBooksPage: (page: number) => Promise<void>
+    addToFavorites: (idBook: string) => void
 }
+
+let favoriteArray: BookDTO[] = []
+
 
 const BookContext = createContext({} as IBooksContextData);
 
@@ -47,7 +51,8 @@ function BookProvider({children}: BookProviderProps){
                         author: element.volumeInfo.authors,
                         link: element.volumeInfo.previewLink,
                         img: element.volumeInfo.imageLinks.thumbnail,
-                        description: element.volumeInfo.description
+                        description: element.volumeInfo.description,
+                        favorite: false,
                     }
                 )
             });
@@ -85,7 +90,8 @@ function BookProvider({children}: BookProviderProps){
                         author: element.volumeInfo.authors,
                         link: element.volumeInfo.previewLink,
                         img: element.volumeInfo.imageLinks.thumbnail,
-                        description: element.volumeInfo.description
+                        description: element.volumeInfo.description,
+                        favorite: false
                     }
                 )
             });
@@ -105,8 +111,32 @@ function BookProvider({children}: BookProviderProps){
         }   
     }
 
+
+    function addToFavorites(idBook: string){
+        console.log('id: ',idBook )
+        booksList.Infos.forEach((element: BookDTO) => (
+            element.id === idBook ? 
+            favoriteArray.push({
+                id: element.id,
+                title: element.title,
+                subTitle: element.subTitle,
+                author: element.author,
+                link: element.link,
+                img: element.img,
+                description: element.description,
+                favorite: true
+            })
+            :
+            null
+        ))
+
+        console.log('favoriteArray: ', favoriteArray)
+     
+
+    }
+
     return(
-        <BookContext.Provider value={{getBooksList, booksList, getBooksPage}}>
+        <BookContext.Provider value={{getBooksList, booksList, getBooksPage, addToFavorites}}>
             {children}
         </BookContext.Provider>
     )

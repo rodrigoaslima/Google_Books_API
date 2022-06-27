@@ -91,5 +91,17 @@ export const CloseButton = styled.div`
 `;
 
 export const Header = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
 
+export const FavoriteWrapper = styled.div`
+    display: flex;
+    align-items: baseline;
+`;
+
+export const Favorites = styled.span`
+    margin-right: 2px;
+    font-size: 16px;
 `;
