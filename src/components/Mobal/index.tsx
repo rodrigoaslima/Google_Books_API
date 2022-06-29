@@ -3,7 +3,7 @@ import { useBooks } from '../../context/BookContext';
 import {AiOutlineClose, AiOutlineStar, AiFillStar} from 'react-icons/ai'
 
 import { Overlay, OverlayInner, InnerBox, Authors, DescriptionText, Image, Infos, Preview, SubTitle, Tittle, CloseButton, Header, FavoriteWrapper, Favorites } from './style';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface DataProps{
     data: BookDTO
@@ -11,16 +11,31 @@ interface DataProps{
 }
 
 const Mobal = ({data, openModal}: DataProps) => {
-    const [teste, setTeste] = useState<any[]>([]);
 
-    const { addToFavorites } = useBooks();
-
-    function addBookToFavorites(card: BookDTO){
-       addToFavorites(card.id)
-
-    }
+    const [isFavorite, setIsFavorite] = useState(false);
     
 
+    const { addToFavorites, removeFromFavorites, favoriteBooksList } = useBooks();
+    
+    const organizeFavorites = useCallback(()=>{
+        const favorite: any = favoriteBooksList.find((e: any) => e.id === data.id ? true : false);
+        setIsFavorite(favorite)
+    },[data.id, favoriteBooksList])
+    
+
+    useEffect(()=>{
+        organizeFavorites()
+    },[isFavorite, organizeFavorites, setIsFavorite])
+
+
+    function handleBookToFavorites(card: BookDTO){
+       if(isFavorite){
+        removeFromFavorites(card.id)
+       }else {
+        addToFavorites(card.id)
+       }
+    }
+    
   return(
     <Overlay>
         <OverlayInner>
@@ -29,7 +44,7 @@ const Mobal = ({data, openModal}: DataProps) => {
 
                 <FavoriteWrapper>
                     <Favorites>Add to favorites</Favorites>
-                    <CloseButton onClick={()=> addBookToFavorites(data)}>{data.favorite ? <AiFillStar color='#cc7300' size={50} /> : <AiOutlineStar color='#cc7300' size={50} />}</CloseButton>
+                    <CloseButton onClick={()=> handleBookToFavorites(data)}>{isFavorite ? <AiFillStar color='#cc7300' size={50} /> : <AiOutlineStar color='#cc7300' size={50} />}</CloseButton>
                 </FavoriteWrapper>
             </Header>
             

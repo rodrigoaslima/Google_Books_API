@@ -15,12 +15,13 @@ interface BookList{
 
 interface IBooksContextData{
     booksList: BookList;
-    getBooksList: (text: string) => Promise<void>
-    getBooksPage: (page: number) => Promise<void>
-    addToFavorites: (idBook: string) => void
-}
+    favoriteBooksList:  BookDTO[];
+    getBooksList: (text: string) => Promise<void>;
+    getBooksPage: (page: number) => Promise<void>;
+    addToFavorites: (idBook: string) => void;
+    removeFromFavorites: (idBook: string) => void;
 
-let favoriteArray: BookDTO[] = []
+}
 
 
 const BookContext = createContext({} as IBooksContextData);
@@ -29,6 +30,7 @@ function BookProvider({children}: BookProviderProps){
     const apikey = 'AIzaSyD3sGF0ra4knDg_yXLeRVGTBkaT5NFRr4g';
 
     const [booksList, setBookslist] = useState<BookList>({Infos: [], loading: false, totalItens: 0} as BookList);
+    const [favoriteBooksList,setFavoriteBooksList] = useState<BookDTO[]>([])
     const [text, setText] = useState('');
 
     async function getBooksList({search}: any){ 
@@ -47,7 +49,7 @@ function BookProvider({children}: BookProviderProps){
                     {
                         id: element.id,
                         title: element.volumeInfo.title,
-                        subTitle: element.volumeInfo.subTitle,
+                        subTitle: element.volumeInfo.subtitle,
                         author: element.volumeInfo.authors,
                         link: element.volumeInfo.previewLink,
                         img: element.volumeInfo.imageLinks.thumbnail,
@@ -86,7 +88,7 @@ function BookProvider({children}: BookProviderProps){
                     {
                         id: element.id,
                         title: element.volumeInfo.title,
-                        subTitle: element.volumeInfo.subTitle,
+                        subTitle: element.volumeInfo.subtitle,
                         author: element.volumeInfo.authors,
                         link: element.volumeInfo.previewLink,
                         img: element.volumeInfo.imageLinks.thumbnail,
@@ -111,32 +113,42 @@ function BookProvider({children}: BookProviderProps){
         }   
     }
 
+    //Pegar o livro e adicionar no favoritos.
 
-    function addToFavorites(idBook: string){
-        console.log('id: ',idBook )
-        booksList.Infos.forEach((element: BookDTO) => (
-            element.id === idBook ? 
-            favoriteArray.push({
-                id: element.id,
-                title: element.title,
-                subTitle: element.subTitle,
-                author: element.author,
-                link: element.link,
-                img: element.img,
-                description: element.description,
+    async function addToFavorites(idBook: string){
+        let favoriteBookInfo: BookDTO = {} as BookDTO
+        try {
+            const response: any = await Api.get(`volumes/${idBook}?key=${apikey}`);
+
+            favoriteBookInfo = {
+                id: response.data.id,
+                title: response.data.volumeInfo.title,
+                subTitle: response.data.volumeInfo.subtitle,
+                author: response.data.volumeInfo.authors,
+                link: response.data.volumeInfo.previewLink,
+                img: response.data.volumeInfo.imageLinks.thumbnail,
+                description: response.data.volumeInfo.description,
                 favorite: true
-            })
-            :
-            null
-        ))
+            }
 
-        console.log('favoriteArray: ', favoriteArray)
-     
+            setFavoriteBooksList([...favoriteBooksList, favoriteBookInfo]);
+
+        } catch (error) {
+            console.log('error: ', error)
+        }
 
     }
 
+    //remover livro da lista de favoritos
+
+    function removeFromFavorites(idBook: string){
+        
+        const teste = favoriteBooksList.filter((element: BookDTO) => (element.id !== idBook));
+        setFavoriteBooksList(teste)
+    }
+
     return(
-        <BookContext.Provider value={{getBooksList, booksList, getBooksPage, addToFavorites}}>
+        <BookContext.Provider value={{getBooksList, booksList, getBooksPage, addToFavorites, removeFromFavorites, favoriteBooksList}}>
             {children}
         </BookContext.Provider>
     )
